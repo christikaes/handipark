@@ -23,6 +23,7 @@
     {{> header}}
     {{> locationheader}}
     {{> yield}}
+    {{> moreheader}}
   </div>
 </template>
 
@@ -36,8 +37,9 @@
   <div class = "location-header">
     <div class="manual option highlight">
       <div class = "glyphicon glyphicon-flag"></div>
-      <input id="pac-input" class="controls" type="text"
-        placeholder="Enter a location">
+      <div class="thing">
+      <input id="pac-input" class="controls form-control" type="text" placeholder="Enter a location">
+      </div>
     </div>
     <div class="automatic option">
       <div class = "glyphicon glyphicon-record"></div>
@@ -45,6 +47,20 @@
   </div>
 </template>
 
+
+<template name = "moreheader">
+  <div class = "more-header">
+    <div class="add option highlight">
+      <div class = "glyphicon glyphicon-plus"></div>
+      <!-- <div class="thing">
+      <input id="pac-input" class="controls form-control" type="text" placeholder="Enter a location">
+      </div> -->
+    </div>
+    <div class="details option">
+      <div class = "glyphicon glyphicon-option-horizontal"></div>
+    </div>
+  </div>
+</template>
 <!-- 
 glyphicon glyphicon-alert
 glyphicon glyphicon-plus

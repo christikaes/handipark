@@ -86,10 +86,13 @@ if (Meteor.isClient) {
 
   Template.locationheader.events({
     'click .glyphicon-flag' : function(e){
-
-      $(e.target).closest(".option").toggleClass("highlight", 1000, "easeOutSine");
+      var thing = $(e.target).closest(".option")
+      thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG");
-      Session.set("settingFlag", true);
+      if(thing.hasClass("highlight")){
+        Session.set("settingFlag", true);
+        
+      }
       // change cursor of mouse
     }
   })
@@ -168,7 +171,7 @@ if (Meteor.isClient) {
               '<div class = "info">' + 
                 + marker.data.info +
               '</div>' +
-              '<div class = "report-spot" data-id="'+marker.id+'"> ' +
+              '<div class = "report-spot glyphicon glyphicon-alert" data-id="'+marker.id+'"> ' +
                 'Report Spot' +
               '</div>' +
             '</div>'

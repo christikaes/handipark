@@ -18,6 +18,11 @@ html, body {
   background-color: white;
 }
 
+.thing{
+	width: 80%;
+	float: right;
+}
+
 #slideout-menu {
   background-color: #ddd;
 }
@@ -50,19 +55,20 @@ html, body {
   display: block;
 }
 
-.location-header{
+.location-header,
+.more-header{
 	width:100%;
 	height: 40px;
 }
 
-.location-header .manual,
-.location-header .automatic{
+.option{
 	/*width:50%;*/
 	height: 100%;
 	float:left;
 }
 
-.location-header .glyphicon{
+.location-header .glyphicon,
+.more-header .glyphicon{
 	font-size: 30px;
 	margin: 5px;
 }
