@@ -24,6 +24,7 @@
     {{> locationheader}}
     {{> yield}}
     {{> detailsmore}}
+    {{> addmore}}
     {{> moreheader}}
   </div>
 </template>
@@ -51,24 +52,48 @@
 
 <template name = "moreheader">
   <div class = "more-header">
-    <div class="add option highlight">
-      <div class = "glyphicon glyphicon-plus"></div>
+    <div class="add option2 highlight">
+      <div class = "glyphicon glyphicon-plus"> 
+        Add Parking
+      </div>
       <!-- <div class="thing">
       <input id="pac-input" class="controls form-control" type="text" placeholder="Enter a location">
       </div> -->
     </div>
-    <div class="details option">
-      <div class = "glyphicon glyphicon-option-horizontal"></div>
+    <div class="details option2">
+      <div class = "glyphicon glyphicon-option-horizontal">
+        Closest
+      </div>
     </div>
   </div>
 </template>
 
 <template name = "detailsmore">
-  <ul class="details-more list-group">
+  <ul class="details-more list-group tohide">
     <li class="list-group-item">1 {{name}}, {{dist}} km away</li>
     <li class="list-group-item">2 {{name2}}, {{dist3}} km away</li>
     <li class="list-group-item">3 {{name3}}, {{dist3}} km away</li>
   </ul>
+</template>
+
+<template name = "addmore">
+  <div class="add-more">
+    <form class= "new-task">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name">
+      </div>
+      <div class="form-group">
+        <label for="numspots">Number of Parking Spots:</label>
+        <input type="number" class="form-control" id="numspots">
+      </div>
+      <div class="checkbox">
+        <label><input type="checkbox" id="commercial"> Commercial</label>
+      </div>
+      <button type="submit" class="btn btn-default">Add Spot</button>
+      <a class="btn btn-default cancel">Cancel</a>
+    </form>
+  </div>
 </template>
 <!-- 
 glyphicon glyphicon-alert
@@ -76,7 +101,7 @@ glyphicon glyphicon-plus
 glyphicon glyphicon-option-horizontal -->
 
 <template name="main">
-  <h1>Welcome to HandiPark!</h1>
+  <!-- <h1>Welcome to HandiPark!</h1> -->
   {{> map}}
 </template>
 

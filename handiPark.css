@@ -67,6 +67,12 @@ html, body {
 	float:left;
 }
 
+.option2{
+	width:50%;
+	height: 100%;
+	float:left;
+}
+
 .location-header .glyphicon,
 .more-header .glyphicon{
 	font-size: 30px;
@@ -97,4 +103,16 @@ html, body {
     position: absolute;
     bottom: 40px;
     width:100%;
+}
+
+.tohide{
+	display: none;
+}
+
+.add-more{
+	display: none;
+    position: absolute;
+    bottom: 40px;
+    width:100%;
+    background-color: #fff;
 }

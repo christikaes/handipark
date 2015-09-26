@@ -1,19 +1,50 @@
 Markers = new Mongo.Collection('markers');  
-
+var om;
 if (Meteor.isClient) {
 
   Meteor.startup(function() {  
     GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
   });
 
+ Template.addmore.events({
+    "submit .new-task": function (event) {
+      // Prevent default browser form submit
+      event.preventDefault();
+ 
+      // Get value from form element
+      var name = event.target.name.value;
+      var numSpots = event.target.numspots.value;
+      var commercial = event.target.commercial.checked;
+ 
+      // Insert a task into the collection
+      Markers.insert({ 
+        lat: Session.get("addingLat"), 
+        lng: Session.get("addingLng"),
+        name: name,
+        numSpots: numSpots,
+        commercial: commercial
+      });
+      
 
+      // Clear form
+      event.target.name.value = "";
+      event.target.numspots.value = "";
+      event.target.commercial.checked = false;
 
+      $(".add-more").hide("slide", {direction: "down"}, 500);
+    },
+    "click .cancel": function (){
+      $(".add-more").hide("slide", {direction: "down"}, 500);
+    }
+  });
 
    // To store the slideout instance.
     var slideout;
 
     Session.set("settingFlag", false);
     Session.set("settingAdd", false);
+    Session.set("flagSet", false);
+    Session.set("oldMarker","")
 
     // Router configuration
     Router.configure({
@@ -27,7 +58,7 @@ if (Meteor.isClient) {
       }
     });
 
-   //  // Define some routes
+    // Define some routes
     Router.route('/', { name: 'main' });
     Router.route('/test', { name: 'test' });
 
@@ -53,8 +84,8 @@ if (Meteor.isClient) {
     mapOptions: function() {
       if (GoogleMaps.loaded()) {
         return {
-          center: new google.maps.LatLng(-37.8136, 144.9631),
-          zoom: 8
+          center: new google.maps.LatLng(42.3597105, -71.0529804),
+          zoom: 15
         };
       }
     }
@@ -62,7 +93,7 @@ if (Meteor.isClient) {
 
   Template.map.events({
     'click' : function(){
-      $(".details-more").hide("slide", {direction: "down"}, 500);
+      // $(".tohide").hide("slide", {direction: "down"}, 500);
     },
     'click .report-spot' : function (e) {
       // delete this document
@@ -74,7 +105,7 @@ if (Meteor.isClient) {
 
   Template.locationheader.events({
     'click' : function(){
-      $(".details-more").hide("slide", {direction: "down"}, 500);
+      $(".tohide").hide("slide", {direction: "down"}, 500);
     },
     'click .glyphicon-flag' : function(e){
       var thing = $(e.target).closest(".option")
@@ -112,13 +143,13 @@ if (Meteor.isClient) {
 
   Template.moreheader.events({
     'click' : function(){
-      $(".details-more").hide("slide", {direction: "down"}, 500);
+      $(".tohide").hide("slide", {direction: "down"}, 500);
     }
   })
 
   Template.moreheader.events({
     'click' : function(){
-      $(".details-more").hide("slide", {direction: "down"}, 500);
+      $(".tohide").hide("slide", {direction: "down"}, 500);
     },
 
     'click .add' : function(e){
@@ -129,6 +160,7 @@ if (Meteor.isClient) {
         console.log("ererek")
         Session.set("settingAdd", true);
         Session.set("settingFlag", false);
+
       }
       // change cursor of mouse
     },
@@ -206,23 +238,97 @@ if (Meteor.isClient) {
         console.log(mindist3)
         console.log(minMark3)
 
-        $(".details-more").show("slide", {direction: "down"}, 500);
+        if(Session.get("flagSet")){
+          $(".details-more").show("slide", {direction: "down"}, 500);
+        }
 
 
       }
       // change cursor of mouse
     }
   })
+  
+
 
   Template.map.onCreated(function() {  
     // GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
     GoogleMaps.ready('map', function(map) {
+
+      //populate the data
+      var data = [["1 Union St",6,42.3605884,-71.0566478],
+                ["200 State St",2,42.3597105,-71.0529804],
+                ["84 Central St",1,42.358866,-71.0530764],
+                ["43 Hawkins St",4,42.3621599,-71.0609191],
+                ["31 Bowker St",1,42.362289,-71.0607594],
+                ["25 Sudbury St",6,42.3614474,-71.0605307],
+                ["10 Somerset St",3,42.3587902,-71.061605],
+                ["1 Ashburton St",2,42.3590545,-71.0628802],
+                ["8 Ashburton St",2,42.3590336,-71.0628288],
+                ["20 Ashburton St",1,42.3590456,-71.062739],
+                ["35 Bowdoin",1,42.2999349,-71.0722702],
+                ["65 Joy St",2,42.3604596,-71.065081],
+                ["84 Joy St",1,42.360917,-71.0652568],
+                ["19 Myrtle St",2,42.3595269,-71.0653017],
+                ["33 Mt. Vernon St",1,42.3585008,-71.0645667],
+                ["28 Derne St",2,42.3594206,-71.063973],
+                ["100 Cambridge St",3,42.3599005,-71.1194061],
+                ["19 Staniford St",3,42.3620373,-71.0635527],
+                ["150 Staniford St",4,42.3644379,-71.063972],
+                ["107 Merrimac st",4,42.3639065,-71.0625429],
+                ["17 Lancaster St",2,42.3639688,-71.0621671],
+                ["197 Friend St",2,42.3642348,-71.0603951],
+                ["54 Canal St",1,42.3634469,-71.0594548],
+                ["239 Medford St",5,42.3804097,-71.0606693],
+                ["45 Devonshire St",2,42.3584392,-71.0572881],
+                ["40 Water St",5,42.3576883,-71.0568698],
+                ["55 Arch St",4,42.3557565,-71.0580338],
+                ["65 Franklin",4,42.3553195,-71.0584263],
+                ["225 Franklin",5,42.3560286,-71.0540513],
+                ["18 Province St",6,42.357281,-71.059575],
+                ["348 Hanover St",1,42.3650128,-71.0534021],
+                ["369 Hanover St",1,42.3649048,-71.0533043],
+                ["440 Hanover St",1,42.3668374,-71.0527874],
+                ["477 Hanover St",2,42.3667707,-71.0526204],
+                ["120 Commercial St",2,42.3619877,-71.0528514],
+                ["145 Commercial St",2,42.3623309,-71.0516395],
+                ["190 Commercial St",2,42.3630802,-71.0518589],
+                ["357 Commercial St",2,42.3660619,-71.050973],
+                ["370 Commercial St",2,42.3661621,-71.0513005],
+                ["404 Commercial St",1,42.3667785,-71.0521156],
+                ["455 Commercial St",1,42.3676835,-71.0534823],
+                ["544 Commercial St",2,42.3682843,-71.0561109],
+                ["27 Charter St",2,42.366843,-71.053588],
+                ["43 Charter St",2,42.36712,-71.054198],
+                ["47 Charter St",2,42.36726,-71.054511],
+                ["49 Charter St",2,42.3672465,-71.0546981],
+                ["4 Battery St",1,42.366389,-71.052565],
+                ["5 Battery St",1,42.366245,-71.0525357],
+                ["9 Battery St",1,42.3662128,-71.0523245],
+                ["214 North St",1,42.3634196,-71.0532428],
+                ["274 North St",1,42.3637823,-71.0520096]]
+
+      data.forEach(function(d){
+        Markers.insert({
+          lat: d[2], 
+          lng: d[3],
+          name: d[0],
+          numSpots: d[1],
+          commercial: true
+        })
+      });
+
+
       google.maps.event.addListener(map.instance, 'click', function(event) {
         console.log(Session.get("settingAdd"))
         if(!Session.get("settingFlag")){
           if(Session.get("settingAdd")){
-            Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+            Session.set("addingLat", event.latLng.lat());
+            Session.set("addingLng", event.latLng.lng());
+            // Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
             Session.set("settingAdd", false)
+            console.log("skjflsdjfklsjflsdjf")
+            $(".add-more").show("slide", {direction: "down"}, 500);
+
           }
         } else {
           var infowindow = new google.maps.InfoWindow();
@@ -245,11 +351,20 @@ if (Meteor.isClient) {
           Session.set("destinationLat", event.latLng.lat());
           Session.set("destinationLng", event.latLng.lng());
 
-          infowindow.setContent('<div><strong>' + + '</strong><br>' +
-              'Place ID: ' + '<br>' 
-              );
-          infowindow.open(map.instance, marker);
+          // infowindow.setContent('<div><strong>' + + '</strong><br>' +
+          //     'Place ID: ' + '<br>' 
+          //     );
+          // infowindow.open(map.instance, marker);
           Session.set("settingFlag", false)
+          Session.set("flagSet", true)
+
+          // if(om){
+          //   om.setMap(null);
+          // }
+          // // var om = Session.get("oldMarker");
+
+          // om = marker;
+          // // Session.set("oldMarker", marker.id);
             }
           });
 
@@ -269,9 +384,11 @@ if (Meteor.isClient) {
             // We store the document _id on the marker in order 
             // to update the document within the 'dragend' event below.
             id: document._id,
+            // title: document.name,
             data: {
-              title: document.lng,
-              info : JSON.stringify(document.lat)
+              name: document.name,
+              numSpots : document.numSpots,
+              commercial : document.commercial
             }
           });
 
@@ -283,18 +400,24 @@ if (Meteor.isClient) {
           // This listener lets us drag markers on the map and update their corresponding document.
           google.maps.event.addListener(marker, 'click', function(event) {
             console.log("click")
-
-            var html = '<div>' +
-              '<div class = "title">' +
-                + marker.data.title +
-              '</div>' +
-              '<div class = "info">' + 
-                + marker.data.info +
-              '</div>' +
-              '<div class = "report-spot glyphicon glyphicon-alert" data-id="'+marker.id+'"> ' +
-                'Report Spot' +
-              '</div>' +
-            '</div>'
+            var str ="";
+            var html = str.concat('<div>',
+              '<div class = "title">',
+                marker.data.name,
+              '</div>',
+              '<div class = "info">',
+              "There are : ",
+               JSON.stringify(marker.data.numSpots),
+               "spots available",
+              '</div>',
+              '<div class = "info">',
+              "Commercial Parking: ",
+               JSON.stringify(marker.data.commercial),
+              '</div>',
+              '<div class = "report-spot glyphicon glyphicon-alert" data-id="'+marker.id+'"> ',
+                'Report Spot',
+              '</div>',
+            '</div>')
 
             var infowindow = new google.maps.InfoWindow({
               content: html
