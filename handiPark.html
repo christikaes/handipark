@@ -1,16 +1,66 @@
 <head>
-  <title>simple-todos</title>
+  <title>handiPark</title>
+
+  <meta http-equiv="cleartype" content="on">
+  <meta name="MobileOptimized" content="320">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> map}}
 
 </body>
 
- <template name="map">  
-    <div class="map-container">
-      {{> googleMap name="map" options=mapOptions}}
+<template name="MasterLayout">
+  <div id="slideout-menu">
+    <strong>Menu</strong>
+    <hr />
+    <a href="{{pathFor 'main'}}">Map</a><br />
+    <a href="{{pathFor 'test'}}">test</a><br />
+  </div>
+  <div id="content">
+    {{> header}}
+    {{> locationheader}}
+    {{> yield}}
+  </div>
+</template>
+
+<template name = "header">
+  <div class = "slideout-toggle">
+    Slideout
+  </div>
+</template>
+
+<template name = "locationheader">
+  <div class = "location-header">
+    <div class="manual option highlight">
+      <div class = "glyphicon glyphicon-flag"></div>
+      <input id="pac-input" class="controls" type="text"
+        placeholder="Enter a location">
     </div>
-  </template>  
+    <div class="automatic option">
+      <div class = "glyphicon glyphicon-record"></div>
+    </div>
+  </div>
+</template>
+
+<!-- 
+glyphicon glyphicon-alert
+glyphicon glyphicon-plus
+glyphicon glyphicon-option-horizontal -->
+
+<template name="main">
+  <h1>Welcome to HandiPark!</h1>
+  {{> map}}
+</template>
+
+<template name="map">  
+  <div class="map-container">
+    {{> googleMap name="map" options=mapOptions}}
+  </div>
+</template>  
+
+<template name="test">
+  Add a parking spot here
+</template>
