@@ -23,6 +23,7 @@
     {{> header}}
     {{> locationheader}}
     {{> yield}}
+    {{> detailsmore}}
     {{> moreheader}}
   </div>
 </template>
@@ -60,6 +61,14 @@
       <div class = "glyphicon glyphicon-option-horizontal"></div>
     </div>
   </div>
+</template>
+
+<template name = "detailsmore">
+  <ul class="details-more list-group">
+    <li class="list-group-item">1 {{name}}, {{dist}} km away</li>
+    <li class="list-group-item">2 {{name2}}, {{dist3}} km away</li>
+    <li class="list-group-item">3 {{name3}}, {{dist3}} km away</li>
+  </ul>
 </template>
 <!-- 
 glyphicon glyphicon-alert

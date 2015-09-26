@@ -13,6 +13,7 @@ if (Meteor.isClient) {
     var slideout;
 
     Session.set("settingFlag", false);
+    Session.set("settingAdd", false);
 
     // Router configuration
     Router.configure({
@@ -48,22 +49,6 @@ if (Meteor.isClient) {
       }
     })
 
-  // // counter starts at 0
-  // Session.setDefault('counter', 0);
-
-  // Template.hello.helpers({
-  //   counter: function () {
-  //     return Session.get('counter');
-  //   }
-  // });
-
-  // Template.hello.events({
-  //   'click button': function () {
-  //     // increment the counter when button is clicked
-  //     Session.set('counter', Session.get('counter') + 1);
-  //   }
-  // });
-
   Template.map.helpers({  
     mapOptions: function() {
       if (GoogleMaps.loaded()) {
@@ -76,6 +61,9 @@ if (Meteor.isClient) {
   });
 
   Template.map.events({
+    'click' : function(){
+      $(".details-more").hide("slide", {direction: "down"}, 500);
+    },
     'click .report-spot' : function (e) {
       // delete this document
       var documentId = $(e.target).data("id")
@@ -85,13 +73,142 @@ if (Meteor.isClient) {
   });
 
   Template.locationheader.events({
+    'click' : function(){
+      $(".details-more").hide("slide", {direction: "down"}, 500);
+    },
     'click .glyphicon-flag' : function(e){
       var thing = $(e.target).closest(".option")
       thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG");
       if(thing.hasClass("highlight")){
         Session.set("settingFlag", true);
+        Session.set("settingAdd", false);
         
+      }
+      // change cursor of mouse
+    }
+  })
+
+  Template.detailsmore.helpers({
+    name: function () {
+      return Session.get("name");
+    },
+    name2: function () {
+      return Session.get("name2");
+    },
+    name3: function () {
+      return Session.get("name3");
+    },
+    dist: function () {
+      return Session.get("dist");
+    },
+    dist2: function () {
+      return Session.get("dist2");
+    },
+    dist3: function () {
+      return Session.get("dist3");
+    },
+  })
+
+  Template.moreheader.events({
+    'click' : function(){
+      $(".details-more").hide("slide", {direction: "down"}, 500);
+    }
+  })
+
+  Template.moreheader.events({
+    'click' : function(){
+      $(".details-more").hide("slide", {direction: "down"}, 500);
+    },
+
+    'click .add' : function(e){
+      var thing = $(e.target);
+      thing.toggleClass("highlight", 1000, "easeOutSine");
+      console.log("FLAG2");
+      if(thing.hasClass("highlight")){
+        console.log("ererek")
+        Session.set("settingAdd", true);
+        Session.set("settingFlag", false);
+      }
+      // change cursor of mouse
+    },
+
+    'click .details' : function(e){
+      var thing = $(e.target);
+      thing.toggleClass("highlight", 1000, "easeOutSine");
+      console.log("FLAG2");
+      if(thing.hasClass("highlight")){
+        console.log("here")
+
+        var getDistanceFromLatLonInKm = function(lat1,lon1,lat2,lon2) {
+          var R = 6371; // Radius of the earth in km
+          var dLat = deg2rad(lat2-lat1);  // deg2rad below
+          var dLon = deg2rad(lon2-lon1); 
+          var a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+            ; 
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+          var d = R * c; // Distance in km
+          return d;
+        }
+
+        var deg2rad = function(deg) {
+          return deg * (Math.PI/180)
+        }
+
+        var mindist = 100000000000;
+        var mindist2 = 100000000001;
+        var mindist3 = 100000000002;
+
+        //Get the 3 nearest coords
+        var allMarkers  = Markers.find().fetch();
+        var minMark = allMarkers[0];
+        var minMark2 = allMarkers[1];
+        var minMark3 = allMarkers[2];
+        allMarkers.forEach(function(m){
+          // var x = Session.get("destinationLat") - m.lat;
+          // var y = Session.get("destinationLng") - m.lng;
+
+          // var dist = Math.sqrt(x*x + y*y);
+          var dist = getDistanceFromLatLonInKm(Session.get("destinationLat"), Session.get("destinationLng"), m.lat, m.lng)
+          console.log(dist);
+
+          if(dist<mindist){
+            mindist = dist;
+            minMark = m;
+          } else if(dist < mindist2){
+            mindist3 = mindist2;
+            minMark3 = minMark2;
+            mindist2 = dist;
+            minMark2 = m;
+          } else if(dist < mindist3){
+            mindist3 = dist;
+            minMark3 = m;
+          }
+
+        })
+
+        Session.set("name", "minMark.name");
+        Session.set("name2", "minMark2.name");
+        Session.set("name3", "minMark3.name");
+
+        Session.set("dist", Math.round(mindist*100)/100);
+        Session.set("dist2", Math.round(mindist2*100)/100);
+        Session.set("dist3", Math.round(mindist3*100)/100);
+        console.log(mindist)
+        console.log(minMark)
+        console.log("__")
+        console.log(mindist2)
+        console.log(minMark2)
+        console.log("__")
+        console.log(mindist3)
+        console.log(minMark3)
+
+        $(".details-more").show("slide", {direction: "down"}, 500);
+
+
       }
       // change cursor of mouse
     }
@@ -101,9 +218,12 @@ if (Meteor.isClient) {
     // GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
     GoogleMaps.ready('map', function(map) {
       google.maps.event.addListener(map.instance, 'click', function(event) {
-        console.log(Session.get("settingFlag"))
+        console.log(Session.get("settingAdd"))
         if(!Session.get("settingFlag")){
-          Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+          if(Session.get("settingAdd")){
+            Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+            Session.set("settingAdd", false)
+          }
         } else {
           var infowindow = new google.maps.InfoWindow();
           var marker = new google.maps.Marker({

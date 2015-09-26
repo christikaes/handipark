@@ -86,3 +86,15 @@ html, body {
 	background-color: #fff;
 	width: 80%;
 }
+
+.more-header{
+	position: absolute;
+    bottom: 0px;
+}
+
+.details-more{
+	display: none;
+    position: absolute;
+    bottom: 40px;
+    width:100%;
+}
