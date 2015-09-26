@@ -15,7 +15,10 @@ if (Meteor.isClient) {
       var name = event.target.name.value;
       var numSpots = event.target.numspots.value;
       var commercial = event.target.commercial.checked;
- 
+  
+
+      var am = Markers.find().fetch();
+
       // Insert a task into the collection
       Markers.insert({ 
         lat: Session.get("addingLat"), 
@@ -109,7 +112,7 @@ if (Meteor.isClient) {
     },
     'click .glyphicon-flag' : function(e){
       var thing = $(e.target).closest(".option")
-      thing.toggleClass("highlight", 1000, "easeOutSine");
+      // thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG");
       if(thing.hasClass("highlight")){
         Session.set("settingFlag", true);
@@ -117,6 +120,31 @@ if (Meteor.isClient) {
         
       }
       // change cursor of mouse
+    }
+  })
+
+
+  Template.locationheader.helpers({
+    a : function() {
+      console.log("-----")
+      if(Session.get("settingFlag")){
+        return "blah";
+      }
+      else {
+        return "";
+      }
+    }
+  })
+
+  Template.moreheader.helpers({
+    a : function() {
+      console.log("-----")
+      if(Session.get("settingAdd")){
+        return "blah";
+      }
+      else {
+        return "";
+      }
     }
   })
 
@@ -222,9 +250,9 @@ if (Meteor.isClient) {
 
         })
 
-        Session.set("name", "minMark.name");
-        Session.set("name2", "minMark2.name");
-        Session.set("name3", "minMark3.name");
+        Session.set("name", "There is parking ");
+        Session.set("name2", "There is parking ");
+        Session.set("name3", "There is parking ");
 
         Session.set("dist", Math.round(mindist*100)/100);
         Session.set("dist2", Math.round(mindist2*100)/100);
@@ -253,7 +281,7 @@ if (Meteor.isClient) {
   Template.map.onCreated(function() {  
     // GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
     GoogleMaps.ready('map', function(map) {
-
+      // Meteor.call("clearall")
       //populate the data
       var data = [["1 Union St",6,42.3605884,-71.0566478],
                 ["200 State St",2,42.3597105,-71.0529804],
@@ -504,4 +532,17 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   // code here?
+  Meteor.startup(function() {
+
+    return Meteor.methods({
+
+      clearall: function() {
+
+        return Markers.remove({});
+
+      }
+
+    });
+
+  });
 }

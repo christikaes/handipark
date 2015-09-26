@@ -20,7 +20,7 @@
     <a href="{{pathFor 'test'}}">test</a><br />
   </div>
   <div id="content">
-    {{> header}}
+    <!-- {{> header}} -->
     {{> locationheader}}
     {{> yield}}
     {{> detailsmore}}
@@ -37,22 +37,22 @@
 
 <template name = "locationheader">
   <div class = "location-header">
-    <div class="manual option highlight">
+    <div class="manual option highlight {{a}}">
       <div class = "glyphicon glyphicon-flag"></div>
       <div class="thing">
       <input id="pac-input" class="controls form-control" type="text" placeholder="Enter a location">
       </div>
     </div>
-    <div class="automatic option">
+    <!-- <div class="automatic option">
       <div class = "glyphicon glyphicon-record"></div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 
 <template name = "moreheader">
   <div class = "more-header">
-    <div class="add option2 highlight">
+    <div class="add option2 highlight {{a}}">
       <div class = "glyphicon glyphicon-plus"> 
         Add Parking
       </div>
@@ -70,9 +70,9 @@
 
 <template name = "detailsmore">
   <ul class="details-more list-group tohide">
-    <li class="list-group-item">1 {{name}}, {{dist}} km away</li>
-    <li class="list-group-item">2 {{name2}}, {{dist3}} km away</li>
-    <li class="list-group-item">3 {{name3}}, {{dist3}} km away</li>
+    <li class="list-group-item"> {{name}}, {{dist}} km away</li>
+    <li class="list-group-item"> {{name2}}, {{dist3}} km away</li>
+    <li class="list-group-item"> {{name3}}, {{dist3}} km away</li>
   </ul>
 </template>
 
