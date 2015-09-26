@@ -336,13 +336,15 @@ if (Meteor.isClient) {
                 ["274 North St",1,42.3637823,-71.0520096]]
 
       data.forEach(function(d){
-        Markers.insert({
-          lat: d[2], 
-          lng: d[3],
-          name: d[0],
-          numSpots: d[1],
-          commercial: true
-        })
+        if(Markers.find({lat : d[2], lng: d[3]}).fetch().length < 1){
+          Markers.insert({
+            lat: d[2], 
+            lng: d[3],
+            name: d[0],
+            numSpots: d[1],
+            commercial: true
+          })
+        }
       });
 
 
