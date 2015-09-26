@@ -487,6 +487,7 @@ if (Meteor.isClient) {
       Session.set("destinationLat", place.geometry.location.G);
       Session.set("destinationLng", place.geometry.location.K);
 
+      Session.set("flagSet", true)
       infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
           'Place ID: ' + place.geometry.location + '<br>' +
           place.formatted_address);
