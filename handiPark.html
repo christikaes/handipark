@@ -1,0 +1,16 @@
+<head>
+  <title>simple-todos</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  {{> map}}
+
+</body>
+
+ <template name="map">  
+    <div class="map-container">
+      {{> googleMap name="map" options=mapOptions}}
+    </div>
+  </template>  
