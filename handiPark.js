@@ -1,8 +1,8 @@
-Markers = new Mongo.Collection('markers');  
+Markers = new Mongo.Collection('markers');
 var om;
 if (Meteor.isClient) {
 
-  Meteor.startup(function() {  
+  Meteor.startup(function() {
     GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
   });
 
@@ -10,24 +10,24 @@ if (Meteor.isClient) {
     "submit .new-task": function (event) {
       // Prevent default browser form submit
       event.preventDefault();
- 
+
       // Get value from form element
       var name = event.target.name.value;
       var numSpots = event.target.numspots.value;
       var commercial = event.target.commercial.checked;
-  
+
 
       var am = Markers.find().fetch();
 
       // Insert a task into the collection
-      Markers.insert({ 
-        lat: Session.get("addingLat"), 
+      Markers.insert({
+        lat: Session.get("addingLat"),
         lng: Session.get("addingLng"),
         name: name,
         numSpots: numSpots,
         commercial: commercial
       });
-      
+
 
       // Clear form
       event.target.name.value = "";
@@ -47,7 +47,7 @@ if (Meteor.isClient) {
     Session.set("settingFlag", false);
     Session.set("settingAdd", false);
     Session.set("flagSet", false);
-    Session.set("oldMarker","")
+    Session.set("oldMarker","");
 
     // Router configuration
     Router.configure({
@@ -78,12 +78,12 @@ if (Meteor.isClient) {
 
     Template.header.events({
       'click .slideout-toggle' : function (){
-        console.log("click")
+        console.log("click");
         slideout.toggle();
       }
-    })
+    });
 
-  Template.map.helpers({  
+  Template.map.helpers({
     mapOptions: function() {
       if (GoogleMaps.loaded()) {
         return {
@@ -100,7 +100,7 @@ if (Meteor.isClient) {
     },
     'click .report-spot' : function (e) {
       // delete this document
-      var documentId = $(e.target).data("id")
+      var documentId = $(e.target).data("id");
       Markers.remove(documentId);
     }
 
@@ -111,22 +111,22 @@ if (Meteor.isClient) {
       $(".tohide").hide("slide", {direction: "down"}, 500);
     },
     'click .glyphicon-flag' : function(e){
-      var thing = $(e.target).closest(".option")
+      var thing = $(e.target).closest(".option");
       // thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG");
       if(thing.hasClass("highlight")){
         Session.set("settingFlag", true);
         Session.set("settingAdd", false);
-        
+
       }
       // change cursor of mouse
     }
-  })
+  });
 
 
   Template.locationheader.helpers({
     a : function() {
-      console.log("-----")
+      console.log("-----");
       if(Session.get("settingFlag")){
         return "blah";
       }
@@ -138,7 +138,7 @@ if (Meteor.isClient) {
 
   Template.moreheader.helpers({
     a : function() {
-      console.log("-----")
+      console.log("-----");
       if(Session.get("settingAdd")){
         return "blah";
       }
@@ -146,7 +146,7 @@ if (Meteor.isClient) {
         return "";
       }
     }
-  })
+  });
 
   Template.detailsmore.helpers({
     name: function () {
@@ -167,13 +167,13 @@ if (Meteor.isClient) {
     dist3: function () {
       return Session.get("dist3");
     },
-  })
+  });
 
   Template.moreheader.events({
     'click' : function(){
       $(".tohide").hide("slide", {direction: "down"}, 500);
     }
-  })
+  });
 
   Template.moreheader.events({
     'click' : function(){
@@ -185,7 +185,7 @@ if (Meteor.isClient) {
       thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG2");
       if(thing.hasClass("highlight")){
-        console.log("ererek")
+        console.log("ererek");
         Session.set("settingAdd", true);
         Session.set("settingFlag", false);
 
@@ -198,25 +198,25 @@ if (Meteor.isClient) {
       thing.toggleClass("highlight", 1000, "easeOutSine");
       console.log("FLAG2");
       if(thing.hasClass("highlight")){
-        console.log("here")
+        console.log("here");
 
         var getDistanceFromLatLonInKm = function(lat1,lon1,lat2,lon2) {
           var R = 6371; // Radius of the earth in km
           var dLat = deg2rad(lat2-lat1);  // deg2rad below
-          var dLon = deg2rad(lon2-lon1); 
-          var a = 
+          var dLon = deg2rad(lon2-lon1);
+          var a =
             Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon/2) * Math.sin(dLon/2)
-            ; 
-          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            ;
+          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
           var d = R * c; // Distance in km
           return d;
-        }
+        };
 
         var deg2rad = function(deg) {
-          return deg * (Math.PI/180)
-        }
+          return deg * (Math.PI/180);
+        };
 
         var mindist = 100000000000;
         var mindist2 = 100000000001;
@@ -232,7 +232,7 @@ if (Meteor.isClient) {
           // var y = Session.get("destinationLng") - m.lng;
 
           // var dist = Math.sqrt(x*x + y*y);
-          var dist = getDistanceFromLatLonInKm(Session.get("destinationLat"), Session.get("destinationLng"), m.lat, m.lng)
+          var dist = getDistanceFromLatLonInKm(Session.get("destinationLat"), Session.get("destinationLng"), m.lat, m.lng);
           console.log(dist);
 
           if(dist<mindist){
@@ -248,7 +248,7 @@ if (Meteor.isClient) {
             minMark3 = m;
           }
 
-        })
+        });
 
         Session.set("name", "There is parking ");
         Session.set("name2", "There is parking ");
@@ -257,14 +257,14 @@ if (Meteor.isClient) {
         Session.set("dist", Math.round(mindist*100)/100);
         Session.set("dist2", Math.round(mindist2*100)/100);
         Session.set("dist3", Math.round(mindist3*100)/100);
-        console.log(mindist)
-        console.log(minMark)
-        console.log("__")
-        console.log(mindist2)
-        console.log(minMark2)
-        console.log("__")
-        console.log(mindist3)
-        console.log(minMark3)
+        console.log(mindist);
+        console.log(minMark);
+        console.log("__");
+        console.log(mindist2);
+        console.log(minMark2);
+        console.log("__");
+        console.log(mindist3);
+        console.log(minMark3);
 
         if(Session.get("flagSet")){
           $(".details-more").show("slide", {direction: "down"}, 500);
@@ -274,11 +274,11 @@ if (Meteor.isClient) {
       }
       // change cursor of mouse
     }
-  })
-  
+  });
 
 
-  Template.map.onCreated(function() {  
+
+  Template.map.onCreated(function() {
     // GoogleMaps.load({ v: '3', key: 'AIzaSyBZqYfroF3i_4LMjKONwTtA9wMbZWs8L1g', libraries: 'geometry,places' });
     GoogleMaps.ready('map', function(map) {
       // Meteor.call("clearall")
@@ -333,30 +333,30 @@ if (Meteor.isClient) {
                 ["5 Battery St",1,42.366245,-71.0525357],
                 ["9 Battery St",1,42.3662128,-71.0523245],
                 ["214 North St",1,42.3634196,-71.0532428],
-                ["274 North St",1,42.3637823,-71.0520096]]
+                ["274 North St",1,42.3637823,-71.0520096]];
 
       data.forEach(function(d){
         if(Markers.find({lat : d[2], lng: d[3]}).fetch().length < 1){
           Markers.insert({
-            lat: d[2], 
+            lat: d[2],
             lng: d[3],
             name: d[0],
             numSpots: d[1],
             commercial: true
-          })
+          });
         }
       });
 
 
       google.maps.event.addListener(map.instance, 'click', function(event) {
-        console.log(Session.get("settingAdd"))
+        console.log(Session.get("settingAdd"));
         if(!Session.get("settingFlag")){
           if(Session.get("settingAdd")){
             Session.set("addingLat", event.latLng.lat());
             Session.set("addingLng", event.latLng.lng());
             // Markers.insert({ lat: event.latLng.lat(), lng: event.latLng.lng() });
-            Session.set("settingAdd", false)
-            console.log("skjflsdjfklsjflsdjf")
+            Session.set("settingAdd", false);
+            console.log("skjflsdjfklsjflsdjf");
             $(".add-more").show("slide", {direction: "down"}, 500);
 
           }
@@ -382,11 +382,11 @@ if (Meteor.isClient) {
           Session.set("destinationLng", event.latLng.lng());
 
           // infowindow.setContent('<div><strong>' + + '</strong><br>' +
-          //     'Place ID: ' + '<br>' 
+          //     'Place ID: ' + '<br>'
           //     );
           // infowindow.open(map.instance, marker);
-          Session.set("settingFlag", false)
-          Session.set("flagSet", true)
+          Session.set("settingFlag", false);
+          Session.set("flagSet", true);
 
           // if(om){
           //   om.setMap(null);
@@ -403,7 +403,7 @@ if (Meteor.isClient) {
 
       var markers = {};
 
-      Markers.find().observe({  
+      Markers.find().observe({
         added: function(document) {
           // Create a marker for this document
           var marker = new google.maps.Marker({
@@ -411,7 +411,7 @@ if (Meteor.isClient) {
             animation: google.maps.Animation.DROP,
             position: new google.maps.LatLng(document.lat, document.lng),
             map: map.instance,
-            // We store the document _id on the marker in order 
+            // We store the document _id on the marker in order
             // to update the document within the 'dragend' event below.
             id: document._id,
             // title: document.name,
@@ -429,7 +429,7 @@ if (Meteor.isClient) {
 
           // This listener lets us drag markers on the map and update their corresponding document.
           google.maps.event.addListener(marker, 'click', function(event) {
-            console.log("click")
+            console.log("click");
             var str ="";
             var html = str.concat('<div>',
               '<div class = "title">',
@@ -447,7 +447,7 @@ if (Meteor.isClient) {
               '<div class = "report-spot glyphicon glyphicon-alert" data-id="'+marker.id+'"> ',
                 'Report Spot',
               '</div>',
-            '</div>')
+            '</div>');
 
             var infowindow = new google.maps.InfoWindow({
               content: html
@@ -473,7 +473,7 @@ if (Meteor.isClient) {
           delete markers[oldDocument._id];
         }
       });
-    
+
     // console.log("heresdfsdf")
     var input = document.getElementById('pac-input');
 
@@ -517,7 +517,7 @@ if (Meteor.isClient) {
       Session.set("destinationLat", place.geometry.location.G);
       Session.set("destinationLng", place.geometry.location.K);
 
-      Session.set("flagSet", true)
+      Session.set("flagSet", true);
       infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
           'Place ID: ' + place.geometry.location + '<br>' +
           place.formatted_address);
@@ -528,7 +528,7 @@ if (Meteor.isClient) {
     });
   });
 
-  
+
 
 }
 
